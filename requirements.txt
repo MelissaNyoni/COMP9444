@@ -1,0 +1,9 @@
+librosa
+soundfile
+huggingface_hub
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+jupyter
