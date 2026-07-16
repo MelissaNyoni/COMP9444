@@ -1,3 +1,4 @@
 data/
 *.wav
 *.tar.gz
+.venv
