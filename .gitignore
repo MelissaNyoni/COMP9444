@@ -1,8 +1,8 @@
 data/
 *.wav
 *.tar.gz
-.venv.DS_Store
+.venv/
 .DS_Store
+mel/
 __pycache__/
 *.pyc
-mel/
