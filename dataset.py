@@ -4,7 +4,7 @@ import numpy as np
 from torch.utils.data import Dataset
 
 class GTZANDdataset(Dataset):
-    def __init__(self, mel_dir):
+    def __init__(self, mel_dir, file_list = None):
         self.mel_dir = mel_dir
         self.labels = {
             "blues": 0,
@@ -25,11 +25,14 @@ class GTZANDdataset(Dataset):
             genre_path = os.path.join(mel_dir, genre)
             if not os.path.isdir(genre_path):
                 continue
-            files = sorted(os.listdir(genre_path))
             
+            files = sorted(os.listdir(genre_path))
             for file in files:
                 if not file.endswith(".npy"):
                     continue
+                if file_list is not None:
+                    if file not in file_list:
+                        continue
                 file_path = os.path.join(genre_path, file)
                 label = self.labels[genre]
                 self.samples.append((file_path, label))

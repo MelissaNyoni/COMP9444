@@ -21,7 +21,7 @@ for genre in genres:
     output_genre_path = os.path.join(output_dir, genre)
     os.makedirs(output_genre_path, exist_ok = True)
 
-    for wav_file in os.listdir(genre_path):
+    for wav_file in sorted(os.listdir(genre_path)):
         if wav_file.startswith('.'):
             continue
         wav_path = os.path.join(genre_path,wav_file)
@@ -42,3 +42,5 @@ for genre in genres:
             Failed_files.append(wav_file)
             print(f'Skip {wav_file}')
             continue
+print(f"Failed_files{len(Failed_files)}")
+print(Failed_files)
