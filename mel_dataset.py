@@ -32,9 +32,8 @@ for genre in genres:
 
             mel = librosa.feature.melspectrogram(y = y,sr = sr,n_mels = 128)
             mel_db = librosa.power_to_db(mel, ref = np.max)
-
-            file_name = os.path.splitext(wav_file)[0]
-            save_path = os.path.join(output_genre_path, file_name + '.npy')
+#
+            save_path = os.path.join(output_genre_path, wav_file + '.npy')
             np.save(save_path, mel_db)
 
             print(f'Saved {wav_file}')
