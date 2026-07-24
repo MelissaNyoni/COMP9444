@@ -17,8 +17,8 @@ class GTZANDdataset(Dataset):
     def __init__(self, mel_dir, x_df, y_df):
         self.mel_dir = mel_dir
 
-        assert len(x_train) == len(y_train)
-        assert (x_train["filename"] == y_train["filename"]).all()
+        assert len(x_df) == len(y_df)
+        assert (x_df["filename"] == y_df["filename"]).all()
 
         self.genre_to_label = {
             "blues": 0,
@@ -215,13 +215,13 @@ def cross_validation(train_dataset, Model):
                 f"Epoch [{epoch+1}/{EPOCHS}] "
                 f"Loss: {train_loss:.4f} "
                 f"Train Accuracy: {train_accuracy:.2f}% "
-                f"Validation Accuracy: {validation_accuracy:.2f}%"
-                f"Macro F1:{validation_f1:.2f}"
+                f"Validation Accuracy: {validation_accuracy:.2f}% "
+                f"Macro F1:{validation_f1:.4f}"
             )
 
         fold_f1_scores.append(best_f1)
 
-        fold_f1_scores.append({
+        fold_results.append({
             "Model": Model.__name__,
             "Fold": fold + 1,
             "Macro F1": round(best_f1, 4)
@@ -229,67 +229,31 @@ def cross_validation(train_dataset, Model):
         
     avg_f1 = sum(fold_f1_scores) / len(fold_f1_scores)
     
-    print(f"Average validation accuracy:{avg_accuracy:.2f}%") 
+    print(f"Average Macro F1 :{avg_f1:.4f}") 
    
     return avg_f1, fold_results
    
 
-#Train final model
-def final_train(train_dataset, Model):
+#train_dataset = GTZANDdataset(Mel_dir, x_train, y_train)
     
-    train_loader = DataLoader(
-            train_dataset,
-            batch_size=BATCH_SIZE,
-            shuffle=True
-    )
-    model = Model(NUM_CLASSES).to(DEVICE)
+#results = []
+#fold_summary = []
 
-    criterion = nn.CrossEntropyLoss()
+#for Model in [CNN, CRNN]:
+    #print(f"{Model.__name__}:")
 
-    optimizer = Adam(
-        model.parameters(),
-        lr=LEARNING_RATE,
-        weight_decay=1e-4
-    )
-    
-    for epoch in range(EPOCHS):
-         train_accuracy , train_loss = train_dl_model(model, train_loader, optimizer, criterion)
-         
-         print(
-            f"Epoch [{epoch+1}/{EPOCHS}] "
-            f"Loss: {train_loss:.4f} "
-            f"Train Accuracy: {train_accuracy:.2f}%"
-        )
-   
-    # Save Model
-    torch.save(model.state_dict(), f"{Model.__name__.lower()}.pth")
-    print("Training Finished.")
-    
-    return model
+    #avg_f1, fold_results = cross_validation(train_dataset, Model)
+    #fold_summary.extend(fold_results)
 
-
-train_dataset = GTZANDdataset(Mel_dir, x_train, y_train)
-    
-results = []
-fold_summary = []
-
-for Model in [CRNN]:
-    print(f"{Model.__name__}:")
-
-    avg_f1, fold_results = cross_validation(train_dataset, Model)
-    fold_summary.extend(fold_results)
-
-    final_model = final_train(train_dataset, Model)
-
-    results.append({
-    "Model": Model.__name__,
-    "Average Macro F1": round(avg_f1, 4)
-    })
+    #results.append({
+    #"Model": Model.__name__,
+    #"Average Macro F1": round(avg_f1, 4)
+    #})
 
         
-results_df = pd.DataFrame(results)
-results_df.to_csv("experiment_results.csv", index=False)
-fold_df = pd.DataFrame(fold_summary)
-fold_df.to_csv("fold_results.csv",index=False)
-print(results_df)
+#results_df = pd.DataFrame(results)
+#results_df.to_csv("experiment_results.csv", index=False)
+#fold_df = pd.DataFrame(fold_summary)
+#fold_df.to_csv("fold_results.csv",index=False)
+#print(results_df)
  
