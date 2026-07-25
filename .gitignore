@@ -3,6 +3,5 @@ data/
 *.tar.gz
 .venv/
 .DS_Store
-mel/
 __pycache__/
 *.pyc
